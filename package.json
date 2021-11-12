@@ -1,0 +1,37 @@
+{
+  "name": "@coderbyheart/aws-iot-serverless-architecture",
+  "version": "0.0.0-development",
+  "description": "Slides for my talk about Serverless Architecture for IoT on AWS",
+  "scripts": {
+    "start": "npx live-server --port=8000 --no-browser --open=./public",
+    "watch": "./.devcontainer/wa make build",
+    "postinstall": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coderbyheart/aws-iot-serverless-architecture.git"
+  },
+  "keywords": [
+    "Cloud",
+    "Application Development",
+    "Serverless",
+    "Architecture",
+    "AWS"
+  ],
+  "author": "Markus Tacker <Markus.Tacker@NordicSemi.no>",
+  "license": "CC-BY-NC-SA-4.0",
+  "bugs": {
+    "url": "https://github.com/coderbyheart/aws-iot-serverless-architecture/issues"
+  },
+  "homepage": "https://github.com/coderbyheart/aws-iot-serverless-architecture#readme",
+  "devDependencies": {
+    "@nordicsemiconductor/asset-tracker-cloud-code-style": "9.2.12",
+    "live-server": "1.2.1",
+    "prettier": "2.4.1"
+  },
+  "lint-staged": {
+    "*.{yml,md,js,json}": [
+      "prettier --write --config .prettierrc.js"
+    ]
+  }
+}
