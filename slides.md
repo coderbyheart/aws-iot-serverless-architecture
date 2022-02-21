@@ -54,8 +54,15 @@ header-includes: |
       line-height: 42px;
       padding-left: 10vw;
    }
-   #markus-tacker img {
+   #about-me img {
       border-radius: 100%;
+    }
+    #about-me ul {
+      font-size: 80%;
+      margin-top: 6rem;
+    }
+    #about-me div.column:first-child {
+      text-align: center;
     }
     .slide-background:first-child .slide-background-content {
       background-image: url('./titlebg.png');
@@ -67,7 +74,7 @@ header-includes: |
       font-size: 60px;
     }
     #title-slide h1:after {
-      content: "AWS User Group Trondheim";
+      content: "IDG2001 | Cloud Technologies | NTNU";
       display: block;
       color: #222;
       background-color: white;
@@ -77,7 +84,7 @@ header-includes: |
       font-size: 32px;
     }
     #title-slide:after {
-      content: "December 2021";
+      content: "February 2022";
       font-size: 22px;
       color: white;
       font-style: italic;
@@ -97,25 +104,45 @@ header-includes: |
   </style>
 ---
 
-## Markus Tacker
+## About me
 
-![Markus Tacker](./markus.jpg){width=15%}
+:::::::::::::: {.columns}
 
-**Senior R&D Engineer**  
-Nordic Semiconductor
+::: {.column}
+
+![Markus Tacker](./markus.jpg){width=35%}
+
+Markus Tacker
+
+**Senior R&D Engineer**
 
 <small>[Markus.Tacker@NordicSemi.no](mailto:Markus.Tacker@NordicSemi.no)  
 Twitter: [\@coderbyheart](https://twitter.com/coderbyheart)  
 [coderbyheart.com](https://coderbyheart.com)</small>
 
-### My work at Nordic Semiconductor
+:::
 
-#### 2017
+::: {.column}
+
+- 1980: Born in Germany (Xennial)
+- 1998: first business building websites
+- 2003: Mediengestalter für Digital- und Printmedien, Fachrichtung
+  Medienoperating nonprint
+- 2012: B.Sc. Computer Science (Univ. Wiesbaden)
+- 2017+: in Trondheim, at [Nordic Semiconductor](https://www.nordicsemi.com/)
+
+:::
+
+::::::::::::::
+
+## My work at Nordic Semiconductor
+
+**2017**
 
 First full time cloud engineer working on [nrfcloud.com](https://nrfcloud.com/)
 building Software-as-a-service (Saas) offering.
 
-#### 2019
+**2019**
 
 Application Group to work on on open-source end-to-end examples of real world
 IoT products.
@@ -125,7 +152,6 @@ IoT products.
 - Why _serverless_?
 - Scenario overview
 - Amazon Web Services (AWS) implementation
-- Microsoft Azure
 
 ## What is _serverless_?
 
@@ -182,12 +208,9 @@ for a monolithic container to come up again after a fix has been deployed.
 
 ## Downsides of serverless
 
+## Testability
+
 - Testing cloud-native solutions really is a challenge.
-- More ceremony involved, defining infrastructure as code is now your job.
-- Impossible to run it locally.
-- Huge mindset shift from the classical application server model (LAMP, Tomcat,
-  Rails), to a serverless, stateless, eventual consistent application
-  development model.
 
 :::notes
 
@@ -196,12 +219,40 @@ https://coderbyheart.com/it-does-not-run-on-my-machine/
 
 :::
 
+## Infrastructure is part of the solution
+
+- More ceremony involved, defining infrastructure as code is now your job.
+
+## Serverless is usually closed source
+
+- Impossible to run it locally.
+
+## Mindset shift
+
+- Huge mindset shift from the classical application server model (LAMP, Tomcat,
+  Rails), to a serverless, stateless, eventual consistent application
+  development model.
+
 ## IoT <3 Serverless
 
-- Many, many devices, that don't share global state
-- Needs to scale to billions of devices, connections, message per day
+## No **world**
+
+- Many, many devices, that don't share global state.
+
+## 18+ billion IoT devices this year
+
+- Needs to scale to billions of devices, connections, message per day.
+
+:::notes
+
+https://www.ericsson.com/en/about-us/company-facts/ericsson-worldwide/india/authored-articles/ushering-in-a-better-connected-future
+
+:::
+
+## Data for thousands of use cases
+
 - Many different operations with different business needs (processing) on small
-  datasets, suits serverless microservice model very well
+  datasets, suits serverless microservice model very well.
 
 ## Architecture Example: store and retrieve temperature data
 
@@ -213,14 +264,10 @@ https://coderbyheart.com/it-does-not-run-on-my-machine/
 
 ![AWS implementation](./aws.jpg){width=80%}
 
-## Azure implementation
-
-![Azure implementation](./azure.jpg){width=80%}
-
 ## Book recommendations
 
 - [REST in Practice](http://shop.oreilly.com/product/9780596805838.do)
-- [Accelerate](https://itrevolution.com/book/accelerate/)
+- [ACCELERATE](https://itrevolution.com/book/accelerate/)
 
 ## Thank you & happy connecting!
 
@@ -231,3 +278,7 @@ Twitter: [\@coderbyheart](https://twitter.com/coderbyheart)</small>
 
 <small>Latest version:  
 [`bit.ly/awsiotarch`](https://bit.ly/awsiotarch)</small>
+
+We are hiring!  
+[nordicsemi.com/jobs](https://nordicsemi.com/jobs)  
+<small>Trondheim &middot; Oslo &middot; worldwide</small>

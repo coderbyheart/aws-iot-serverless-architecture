@@ -16,6 +16,18 @@ An up-to-date version is published to
 
 Press `s` to show the speaker notes.
 
+### Locally
+
+Open the project using
+[Dev Container](https://code.visualstudio.com/docs/remote/containers).
+
+Open two shells:
+
+1. `npm run watch`
+2. `npm start`
+
+You can now view the slides at <http://127.0.0.1:8000>.
+
 ## Building
 
 Render to reveal.js:

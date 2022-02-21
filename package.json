@@ -3,7 +3,7 @@
   "version": "0.0.0-development",
   "description": "Slides for my talk about Serverless Architecture for IoT on AWS",
   "scripts": {
-    "start": "npx live-server --port=8000 --no-browser --open=./public",
+    "start": "npx live-server --port=8000 --no-browser ./public",
     "watch": "./.devcontainer/wa make build",
     "postinstall": "husky install"
   },
