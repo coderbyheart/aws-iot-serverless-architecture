@@ -103,6 +103,9 @@ header-includes: |
     .slide p {
       text-align: left;
     }
+    #thank-you-happy-connecting.slide p {
+      text-align: center;
+    }
     .reveal pre {
       box-shadow: none;
     }
