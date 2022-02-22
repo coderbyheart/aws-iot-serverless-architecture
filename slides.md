@@ -171,7 +171,38 @@ IoT products.
 - either through a gateway (PC, phone)
 - or directly, using cellular IoT (wireless radio)
 
+### Benefits of _IoT_
+
+Enable new aproaches to conserve and protect resources and make smarter,
+real-time data-driven decisions.
+
+:::::::::::::: {.columns}
+
+::: {.column}
+
+[![RAM1](./ram1.webp){width=40%}](https://www.nordicsemi.com/News/2021/02/IRNAS-employs-nRF9160-and-nRF52811)
+
+<small>Power transmission tower which detects failures and allows to react
+immediately and prevent for example wildfires cause by electrical fire.</small>
+
+:::
+
+::: {.column}
+
+[![WakeCap](./WakeCap.webp){width=60%}](https://www.nordicsemi.com/News/2021/01/Wirepas-Mesh-hard-hat-sensor-locates-wearer-across-large-sites-and-reports-activity-incidents)
+
+<small>Hard hat sensor locates wearer across large sites and reports
+activity/incidents.</small>
+
+:::
+
+::::::::::::::
+
 ### Protocols for the Internet of Things
+
+- ultra shortrange: cm (NFC, ...)
+- shortrange: m (Bluetooth, Zigbee, WiFi, ...)
+- long range: km (LoRa, LTE, ...)
 
 ### Wireless radio protocols
 
