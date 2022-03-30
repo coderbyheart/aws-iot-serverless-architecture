@@ -16,8 +16,8 @@ header-includes: |
         font-family: var(--main-font); 
         font-weight: 400;
         font-size: 32px;
-        margin-top: 42px;
-        height: calc(100% - 42px);
+        margin-top: 60px;
+        height: calc(100% - 120px);
    }
    .reveal strong {
         font-weight: 500;
@@ -40,28 +40,44 @@ header-includes: |
      background-color: #fff;
    }
    .reveal-viewport::before {
-      content: "© Nordic Semiconductor | CC-BY-NC-SA-4.0";
+      content: "@coderbyheart";
       position: absolute;
       top: 0; 
       left: 0;
       width: 100%; 
-      height: 42px;
+      height: 60px;
       background-color: #00a9ce;
       color: white;
       font-family: var(--main-font);
-      font-size: 14px;
-      font-weight: bold;
-      line-height: 42px;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 60px;
       padding-left: 10vw;
    }
-   #about-me img {
+   .reveal-viewport::after {
+      content: "© Nordic Semiconductor | CC-BY-NC-SA-4.0";
+      position: absolute;
+      bottom: 0; 
+      left: 0;
+      width: calc(100% - 10vw); 
+      height: 60px;
+      background-color: #00a9ce;
+      color: white;
+      font-family: var(--main-font);
+      font-size: 22px;
+      font-weight: 300;
+      line-height: 60px;
+      padding-right: 10vw;
+      text-align: right;
+   }
+   #markus-tacker img {
       border-radius: 100%;
     }
-    #about-me ul {
+    #markus-tacker ul {
       font-size: 80%;
       margin-top: 6rem;
     }
-    #about-me div.column:first-child {
+    #markus-tacker div.column:first-child {
       text-align: center;
     }
     .slide-background:first-child .slide-background-content {
@@ -73,7 +89,7 @@ header-includes: |
       font-size: 60px;
     }
     #title-slide h1:after {
-      content: "PROG2005 | Cloud Technologies | NTNU";
+      content: "AWS UserGroup | Trondheim";
       display: block;
       color: #222;
       background-color: white;
@@ -112,32 +128,24 @@ header-includes: |
   </style>
 ---
 
-## About me
+## Markus Tacker
 
 :::::::::::::: {.columns}
 
-::: {.column}
+::: {.column width=40%}
 
-![Markus Tacker](./markus.jpg){width=35%}
-
-Markus Tacker
-
-**Senior R&D Engineer**
-
-<small>[Markus.Tacker@NordicSemi.no](mailto:Markus.Tacker@NordicSemi.no)  
-Twitter: [\@coderbyheart](https://twitter.com/coderbyheart)  
-[coderbyheart.com](https://coderbyheart.com)</small>
+![Markus Tacker](./markus.jpg){width=50%}
 
 :::
 
-::: {.column}
+::: {.column width=48%}
 
-- 1980: Born in Germany (Xennial)
-- 1998: first business building websites
-- 2003: Mediengestalter für Digital- und Printmedien, Fachrichtung
-  Medienoperating nonprint
-- 2012: B.Sc. Computer Science (Univ. Wiesbaden)
-- 2017+: in Trondheim, at [Nordic Semiconductor](https://www.nordicsemi.com/)
+Senior R&D Engineer, Nordic Semiconductor, Trondheim
+
+<small>**Software crafter. Code donor. Mentor. Speaker. Conference & Community
+builder. Camper.**</small>
+
+[\@coderbyheart](https://twitter.com/coderbyheart)
 
 :::
 
@@ -1377,11 +1385,11 @@ https://www.ericsson.com/en/about-us/company-facts/ericsson-worldwide/india/auth
 Please share your feedback!
 
 <small>[Markus.Tacker@NordicSemi.no](mailto:Markus.Tacker@NordicSemi.no)  
-Twitter: [\@coderbyheart](https://twitter.com/coderbyheart)</small>
+[\@coderbyheart](https://twitter.com/coderbyheart)</small>
 
 <small>Latest version:  
 [`bit.ly/awsiotarch`](https://bit.ly/awsiotarch)</small>
 
-We are hiring summer students and graduates!  
+We are hiring!  
 [nordicsemi.com/jobs](https://nordicsemi.com/jobs)  
-<small>Trondheim &middot; Oslo</small>
+<small>Trondheim &middot; Oslo &middot; 20+ more locations</small>
