@@ -34,6 +34,7 @@ jobs:
           git config --global user.name "GitHub Actions"
           cd public
           git init
+          touch .nojekyll
           git add ./*
           git commit -m '📦 publish latest export'
           git remote add origin https://github.com/${GITHUB_REPOSITORY}.git
