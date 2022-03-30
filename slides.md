@@ -73,7 +73,7 @@ header-includes: |
       font-size: 60px;
     }
     #title-slide h1:after {
-      content: "IDG2001 | Cloud Technologies | NTNU";
+      content: "PROG2005 | Cloud Technologies | NTNU";
       display: block;
       color: #222;
       background-color: white;
@@ -83,7 +83,7 @@ header-includes: |
       font-size: 32px;
     }
     #title-slide:after {
-      content: "February 2022";
+      content: "March 2022";
       font-size: 22px;
       color: white;
       font-style: italic;
@@ -166,7 +166,7 @@ IoT products.
 - IoT <3 _serverless_
   - Architecture Example:  
     store and retrieve temperature data
-- Book recommendations
+- Learning resources
 
 ## What is _IoT_?
 
@@ -1358,10 +1358,19 @@ https://www.ericsson.com/en/about-us/company-facts/ericsson-worldwide/india/auth
 
 ![AWS implementation](./aws.jpg){width=80%}
 
-## Book recommendations
+## Learning resources
+
+### Book recommendations
 
 - [REST in Practice](http://shop.oreilly.com/product/9780596805838.do)
 - [ACCELERATE](https://itrevolution.com/book/accelerate/)
+
+### Cellular IoT development
+
+- [Best practices for cellular IoT development](https://infocenter.nordicsemi.com/topic/nwp_044/WP/nwp_044/intro.html)
+  (Whitepaper)
+- [nRF Connect SDK fundamentals](https://academy.nordicsemi.com/courses/nrf-connect-sdk-fundamentals/)
+  (Online course)
 
 ## Thank you & happy connecting!
 
