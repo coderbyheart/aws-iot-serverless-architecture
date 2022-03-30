@@ -147,6 +147,8 @@ builder. Camper.**</small>
 
 [\@coderbyheart](https://twitter.com/coderbyheart)
 
+<small>Pronouns: he/him</small>
+
 :::
 
 ::::::::::::::
