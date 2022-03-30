@@ -25,9 +25,9 @@
   },
   "homepage": "https://github.com/coderbyheart/aws-iot-serverless-architecture#readme",
   "devDependencies": {
-    "@nordicsemiconductor/asset-tracker-cloud-code-style": "11.0.28",
+    "@nordicsemiconductor/asset-tracker-cloud-code-style": "11.0.47",
     "live-server": "1.2.1",
-    "prettier": "2.5.1"
+    "prettier": "2.6.1"
   },
   "lint-staged": {
     "*.{yml,md,js,json}": [
