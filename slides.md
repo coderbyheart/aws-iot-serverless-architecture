@@ -1362,7 +1362,7 @@ https://www.ericsson.com/en/about-us/company-facts/ericsson-worldwide/india/auth
 
 ![Historical Data](./historical-data.jpg)
 
-[miro.com/app/board/o9J_llBJjJM=](https://miro.com/app/board/o9J_llBJjJM=/)
+[PDF version](./assets/miro.pdf) - [Miro Board](https://miro.com/app/board/o9J_llBJjJM=/)
 
 ### AWS implementation
 
