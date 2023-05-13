@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>Serverless Architecture for IoT on AWS</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <style>
+    .reveal .sourceCode {  /* see #7635 */
+      overflow: visible;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+   .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+      font-weight: 300;
+      text-transform: none;
+      font-family: var(--heading-font);
+      color: #00a9ce;
+   } 
+   .reveal {
+        font-size: var(--main-font-size);
+        font-family: var(--main-font); 
+        font-weight: 400;
+        font-size: 32px;
+        margin-top: 60px;
+        height: calc(100% - 120px);
+   }
+   .reveal strong {
+        font-weight: 500;
+   }
+   .reveal a {
+      color: #00a9ce;
+   }
+   .reveal ul {
+     list-style-type: square;
+     list-style-color: #00a9ce;
+   }
+   .reveal li::marker {
+     color: #00a9ce;
+   }
+   :root {
+        --main-font: 'Work Sans', sans-serif;
+       --heading-font: 'Work Sans', sans-serif;
+   }
+   .reveal-viewport {
+     background-color: #fff;
+   }
+   .reveal-viewport::before {
+      content: "@coderbyheart";
+      position: absolute;
+      top: 0; 
+      left: 0;
+      width: 100%; 
+      height: 60px;
+      background-color: #00a9ce;
+      color: white;
+      font-family: var(--main-font);
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 60px;
+      padding-left: 10vw;
+   }
+   .reveal-viewport::after {
+      content: "© Nordic Semiconductor | CC-BY-NC-SA-4.0";
+      position: absolute;
+      bottom: 0; 
+      left: 0;
+      width: calc(100% - 10vw); 
+      height: 60px;
+      background-color: #00a9ce;
+      color: white;
+      font-family: var(--main-font);
+      font-size: 22px;
+      font-weight: 300;
+      line-height: 60px;
+      padding-right: 10vw;
+      text-align: right;
+   }
+   #markus-tacker img {
+      border-radius: 100%;
+    }
+    #markus-tacker ul {
+      font-size: 80%;
+      margin-top: 6rem;
+    }
+    #markus-tacker div.column:first-child {
+      text-align: center;
+    }
+    .slide-background:first-child .slide-background-content {
+      background-image: url('./titlebg.png');
+    }
+    #title-slide h1 {
+      color: white;
+      font-weight: 500;
+      font-size: 60px;
+    }
+    #title-slide h1:after {
+      content: "AWS UserGroup | Trondheim";
+      display: block;
+      color: #222;
+      background-color: white;
+      padding: 1rem;
+      margin-top: 2rem;
+      font-weight: 300;
+      font-size: 32px;
+    }
+    #title-slide:after {
+      content: "March 2022";
+      font-size: 22px;
+      color: white;
+      font-style: italic;
+    }
+    figcaption {
+      display: none;
+    }
+    div.column {
+      text-align: left;
+      width: calc(50% - 1rem); 
+      margin-right: 1rem;
+    }
+    div.column + div.column {
+      margin-left: 1rem;
+      margin-right: 0;
+    }
+    .slide p {
+      text-align: left;
+    }
+    #thank-you-happy-connecting.slide p {
+      text-align: center;
+    }
+    .reveal pre {
+      box-shadow: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Serverless Architecture for IoT on AWS</h1>
+</section>
+
+<section>
+<section id="markus-tacker" class="title-slide slide level2">
+<h2>Markus Tacker</h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<figure>
+<img data-src="./markus.jpg" style="width:50.0%" alt="Markus Tacker" /><figcaption aria-hidden="true">Markus Tacker</figcaption>
+</figure>
+</div><div class="column" style="width:48%;">
+<p>Senior R&amp;D Engineer, Nordic Semiconductor, Trondheim</p>
+<p><small><strong>Software crafter. Code donor. Mentor. Speaker. Conference &amp; Community builder. Camper.</strong></small></p>
+<p><a href="https://twitter.com/coderbyheart">@coderbyheart</a></p>
+<p><small>Pronouns: he/him</small></p>
+</div>
+</div>
+</section>
+<section id="my-work-at-nordic-semiconductor" class="slide level3">
+<h3>My work at Nordic Semiconductor</h3>
+<h4 id="section">2017</h4>
+<p>First full time cloud engineer working on <a href="https://nrfcloud.com/">nrfcloud.com</a> building Software-as-a-service (Saas) offering.</p>
+<h4 id="section-1">2019</h4>
+<p>Application Group to work on on open-source end-to-end examples of real world IoT products.</p>
+</section></section>
+<section id="agenda" class="title-slide slide level2">
+<h2>Agenda</h2>
+<ul>
+<li>What is <em>IoT</em>?
+<ul>
+<li>Protocols for the Internet of Things.</li>
+</ul></li>
+<li>What is <em>serverless</em>?
+<ul>
+<li>Why I like <em>serverless</em></li>
+<li>Downsides of <em>serverless</em></li>
+</ul></li>
+<li>AWS Lambda explained.</li>
+<li>IoT &lt;3 <em>serverless</em>
+<ul>
+<li>Architecture Example:<br />
+store and retrieve temperature data</li>
+</ul></li>
+<li>Learning resources</li>
+</ul>
+</section>
+
+<section>
+<section id="what-is-iot" class="title-slide slide level2">
+<h2>What is <em>IoT</em>?</h2>
+<ul>
+<li>Computing devices (<em>things</em>) connected to the internet</li>
+<li>either through a gateway (PC, phone)</li>
+<li>or directly, using cellular IoT (wireless radio)</li>
+</ul>
+</section>
+<section id="benefits-of-iot" class="slide level3">
+<h3>Benefits of <em>IoT</em></h3>
+<p>Enable new aproaches to conserve and protect resources and make smarter, real-time data-driven decisions.</p>
+<div class="columns">
+<div class="column">
+<p><a href="https://www.nordicsemi.com/News/2021/02/IRNAS-employs-nRF9160-and-nRF52811"><img data-src="./ram1.webp" style="width:40.0%" alt="RAM1" /></a></p>
+<p><small>Power transmission tower which detects failures and allows to react immediately and prevent for example wildfires cause by electrical fire.</small></p>
+</div><div class="column">
+<p><a href="https://www.nordicsemi.com/News/2021/01/Wirepas-Mesh-hard-hat-sensor-locates-wearer-across-large-sites-and-reports-activity-incidents"><img data-src="./WakeCap.webp" style="width:60.0%" alt="WakeCap" /></a></p>
+<p><small>Hard hat sensor locates wearer across large sites and reports activity/incidents.</small></p>
+</div>
+</div>
+</section>
+<section id="protocols-for-the-internet-of-things" class="slide level3">
+<h3>Protocols for the Internet of Things</h3>
+<ul>
+<li>ultra shortrange: cm (NFC, …)</li>
+<li>shortrange: m (Bluetooth, Zigbee, WiFi, …)</li>
+<li>long range: km (LoRa, LTE, …)</li>
+</ul>
+</section>
+<section id="wireless-radio-protocols" class="slide level3">
+<h3>Wireless radio protocols</h3>
+<figure>
+<img data-src="./wireless-protocols.webp" alt="Wireless radio protocols" /><figcaption aria-hidden="true">Wireless radio protocols</figcaption>
+</figure>
+<aside class="notes">
+<p>The nRF9160 supports two cellular networking protocols: LTE-M and NB-IoT. Fundamentally they both provide IP connectivity to your device, however they are significant differences, which are important to consider when developing your IoT product.</p>
+<p>See <a href="https://www.nordicsemi.com/Products/Low-power-cellular-IoT">this comparison</a></p>
+</aside>
+</section>
+<section id="lte-m" class="slide level3">
+<h3><img data-src="./ltem.webp" alt="LTE-M" /></h3>
+<ul>
+<li>375 kbps downlink, 300 kbps uplink</li>
+<li>~100 kbps application throughput running IP</li>
+<li>supports roaming (same as LTE)</li>
+<li>typically uses frequency bands above 2 Ghz</li>
+<li>ms-latency</li>
+</ul>
+<aside class="notes">
+<p>LTE-M (also known as Cat-M1) is designed for low power applications requiring medium throughput. It has a narrower bandwidth of 1.4 MHz compared to 20 MHz for regular LTE, giving longer range, but less throughput. The throughput is 375 kbps downlink and 300 kbps uplink, providing approximately 100 kbps application throughput running IP. It is suitable for TCP/TLS end-to-end secure connections. Mobility is fully supported, using the same cell handover features as in regular LTE. It is currently possible to roam with LTE-M, meaning it is suitable for applications that will operate across multiple regions. The latency is in the millisecond range offering real time communication for time-critical applications.</p>
+</aside>
+</section>
+<section id="nb-iot" class="slide level3">
+<h3><img data-src="./nbiot.webp" alt="NB-IoT" /></h3>
+<ul>
+<li>60 kbps downlink, 30 kbps uplink</li>
+<li>typically uses frequency bands below 2 Ghz</li>
+<li>no roaming support (some Telcos do offer custom solution)</li>
+<li>good indoor/underground penetration characteristics</li>
+<li>long range</li>
+</ul>
+<aside class="notes">
+<p>NB-IoT (also known as Cat-NB1) is a narrowband technology standard that does not use a traditional LTE physical layer, but is designed to operate in or around LTE bands and coexist with other LTE devices. It has a bandwidth of 200 kHz, giving it longer range and lower throughput compared to LTE-M and regular LTE. The throughput is 60 kbps downlink and 30 kbps uplink. It is suitable for static, low power applications requiring low throughput.</p>
+</aside>
+</section>
+<section id="comparison" class="slide level3">
+<h3>Comparison</h3>
+<div class="columns">
+<div class="column">
+<h4 id="lte-m-1">LTE-M</h4>
+<p><small>for medium throughput applications requiring low power, low latency and/or mobility</small></p>
+<ul>
+<li>asset tracking</li>
+<li>wearables</li>
+<li>medical</li>
+<li>POS</li>
+<li>home security</li>
+</ul>
+</div><div class="column">
+<h4 id="nb-iot-1">NB-IoT</h4>
+<p><small>for static, low throughput applications requiring low power and long range</small></p>
+<ul>
+<li>smart metering</li>
+<li>smart agriculture</li>
+<li>smart city</li>
+</ul>
+</div>
+</div>
+<aside class="notes">
+<p>LTE-M is perfect for medium throughput applications requiring low power, low latency and/or mobility, like asset tracking, wearables, medical, POS and home security applications.</p>
+<p>NB-IoT is perfect for static, low throughput applications requiring low power and long range, like smart metering, smart agriculture and smart city applications. It also provides better penetration in, for example, cellars and parking garages compared to LTE-M.</p>
+</aside>
+</section>
+<section id="application-data" class="slide level3">
+<h3>Application data</h3>
+<figure>
+<img data-src="./common-iot-data-protocols.jpg" style="width:50.0%" alt="Typical IoT Data Protocol Configuration" /><figcaption aria-hidden="true">Typical IoT Data Protocol Configuration</figcaption>
+</figure>
+<p>Typical IoT Data Protocol Configuration</p>
+<aside class="notes">
+<p><a href="https://miro.com/app/board/o9J_kjPVxw8=/">Source</a></p>
+<p>What you see here is a typical configuration for cellular IoT devices.</p>
+</aside>
+</section>
+<section id="the-four-kinds-of-data" class="slide level3">
+<h3>The four kinds of data</h3>
+<ol type="1">
+<li>Device State</li>
+<li>Device Configuration</li>
+<li>Past Data</li>
+<li>Firmware Updates</li>
+</ol>
+</section>
+<section id="device-state" class="slide level3">
+<h3>1. Device State</h3>
+<div class="columns">
+<div class="column">
+<ul>
+<li><strong>sensor readings</strong> (like position, temperature)</li>
+<li>information about its <strong>health</strong> (like battery level)</li>
+</ul>
+<p>Because the latest state should be immediately visible: buffer data in a <em>Digital Twin</em>.</p>
+</div><div class="column">
+<figure>
+<img data-src="./common-iot-data-protocols.jpg" alt="Typical IoT Data Protocol Configuration" /><figcaption aria-hidden="true">Typical IoT Data Protocol Configuration</figcaption>
+</figure>
+</div>
+</div>
+<aside class="notes">
+<p>A device needs to send its sensor readings (like position, temperature) and information about its health to the backend, first an foremost is the battery level a critical health indicator. This data is considered the device state.</p>
+<p>Because we want to always be able to quickly see the latest state of the device, a digital twin can be used to store this state on the backend side: whenever the device sends an update, the digital twin is updated. This allows an application to access the most recent device state immediately without needing to wait for the device to connect and publish its state.</p>
+</aside>
+</section>
+<section id="device-configuration" class="slide level3">
+<h3>2. Device Configuration</h3>
+<div class="columns">
+<div class="column">
+<ul>
+<li>change behaviour of device in real time (e.g. sensor sensititiy, timeouts)</li>
+<li>configure physical state (e.g. <em>locked</em> state of a door lock)</li>
+<li>cloud side <em>owns</em> device state (because the device may lose power and state)</li>
+</ul>
+</div><div class="column">
+<figure>
+<img data-src="./common-iot-data-protocols.jpg" alt="Typical IoT Data Protocol Configuration" /><figcaption aria-hidden="true">Typical IoT Data Protocol Configuration</figcaption>
+</figure>
+</div>
+</div>
+<aside class="notes">
+<p>Depending on the product we might also want to change the device configuration. This could on the one hand be use during development to tweak the aforementioned behavior using variables instead of pushing a new firmware over the air to the device. We observe firmware sizes of around 250 KB which will, even when compressed, be expensive because it will take a device some time to download and apply the updated, not to mention the costs for transferring the firmware update over the cellular network. Especially in NB-IoT-only deployments is the data rate low. Updating a fleet of devices with a new firmware involves orchestrating the roll-out and observing for faults. All these challenges lead to the need to be able to <strong>configure the device</strong>, which allows to tweak the behavior of the device until the inflection point is reached: battery life vs. data granularity. Interesting configuration options are for example the sensitivity of the motion sensor: depending on the tracked subject what is considered “movement” can vary greatly. Various timeout settings have an important influence on power- and data-consumption: the time the device waits to acquire a GPS fix, or the time it waits between sending updates when in motion.</p>
+<p>On the other hand is device configuration needed if the device controls something: imaging a smart lock which needs to manipulate the state of a physical lock. The backend needs a way to tell the device which state that lock should be in, and this setting needs to be persisted on the backend, since the device could lose power, crash or otherwise lose the information if the lock should be open or closed.</p>
+<p>Here again is the digital twin used on the cloud side to store the latest desired configuration of the device immediately, so the application does not have to wait for the device to be connected to record the configuration change. The implementation of the digital twin then will take care of sending only the latest required changes to the device (all changes since the device did last request its configuration are combined into one change) thus also minimizing the amount of data which needs to be transferred to the device.</p>
+</aside>
+</section>
+<section id="past-data" class="slide level3">
+<h3>3. Past Data</h3>
+<p>Cellular IoT devices need to send <strong>data about past events</strong>: they will be offline most of the time.</p>
+<figure>
+<img data-src="./dekningskart.png" alt="Coverage map" /><figcaption aria-hidden="true">Coverage map</figcaption>
+</figure>
+<aside class="notes">
+<p><a href="https://www.telenor.no/privat/dekning/">Source</a></p>
+<p>Imagine a reindeer tracker which tracks the position of a herd. If position updates are only collected when a cellular connection can be established there will be an interesting observation: the reindeers are only walking along ridges, but never in valleys. The reason is not because they don’t like the valley, but because the cellular signal does not reach deep down into remote valleys. The GPS signal however will be received there from the tracker because satellites are high on the horizon and can send their signal down into the valley.</p>
+<p>There are many scenarios where cellular connection might not be available or unreliable but reading sensors work. Robust ultra-mobile IoT products therefore must make this a normal mode of operation: the absence of a cellular connection must be treated as a temporary condition which will eventually resolve and until then business as usual ensues. This means devices should keep measuring and storing these measures in a ring-buffer or employ other strategies to decide which data to discard once the memory limit is reached.</p>
+<p>Once the device is successfully able to establish a connection it will then (after publishing its most recent measurements) publish past data in batch.</p>
+<p>On a side note: the same is true for devices that control a system. They should have built-in decision rules and must not depend on an answer from a cloud backend to provide the action to execute based on the current condition.</p>
+</aside>
+</section>
+<section id="firmware-updates" class="slide level3">
+<h3>4. Firmware Updates</h3>
+<ul>
+<li>2-3 magnitudes larger than a control message (~250 KB)</li>
+<li>notification via control channel (MQTT)</li>
+<li>download via data channel (HTTP): less overhead, supports resume</li>
+</ul>
+<aside class="notes">
+<p>Arguably a firmware update over the air can be seen as configuration, however the size of a typical firmware image (250 KB) is 2-3 magnitudes larger than a control message. Therefore it can be beneficial to treat it differently. Typically an update is initiated by a configuration change, once acknowledged by the device will initiate the firmware download. The download itself is done out of band using not MQTT but HTTP(s) to reduce overhead.</p>
+<p>Additionally firmware updates are so large compared to other messages that the device may suspend all other operation until the firmware update has been applied to conserve resources.</p>
+</aside>
+</section>
+<section id="data-protocols" class="slide level3">
+<h3>Data protocols</h3>
+<ul>
+<li>JSON</li>
+<li>Alternatives to JSON
+<ul>
+<li>Protocol buffers</li>
+<li>Flatbuffers</li>
+<li>CBOR</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<p>Let’s look at the “default” protocol for encoding Application data and what alternatives exist to reduce the amount of data needed to transmit a typical device message: a GPS location.</p>
+</aside>
+</section>
+<section id="json" class="slide level3">
+<h3>JSON</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;v&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;lng&quot;</span><span class="fu">:</span> <span class="fl">10.414394</span><span class="fu">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;lat&quot;</span><span class="fu">:</span> <span class="fl">63.430588</span><span class="fu">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;acc&quot;</span><span class="fu">:</span> <span class="fl">17.127758</span><span class="fu">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;alt&quot;</span><span class="fu">:</span> <span class="fl">221.639832</span><span class="fu">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;spd&quot;</span><span class="fu">:</span> <span class="fl">0.320966</span><span class="fu">,</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;hdg&quot;</span><span class="fu">:</span> <span class="dv">0</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;ts&quot;</span><span class="fu">:</span> <span class="dv">1566042672382</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p>“default” data protocol for IoT (<a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-device-shadows.html">AWS</a>, <a href="https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-devguide-device-twins">Azure</a>, <a href="https://cloud.google.com/iot/docs/how-tos/config/getting-state#api">Google Cloud</a>)</p>
+<div class="columns">
+<div class="column">
+<p>👍 human readable<br />
+👍 schema-less (self-describing)</p>
+</div><div class="column">
+<p>👎 overhead</p>
+</div>
+</div>
+<aside class="notes">
+<p>JSON offers very good support in tooling and is human readable. Especially during development its verbosity is valuable.</p>
+</aside>
+</section>
+<section id="possible-optimizations" class="slide level3">
+<h3>Possible Optimizations</h3>
+<p>GPS location message</p>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb2"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;v&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;lng&quot;</span><span class="fu">:</span> <span class="fl">10.414394</span><span class="fu">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;lat&quot;</span><span class="fu">:</span> <span class="fl">63.430588</span><span class="fu">,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;acc&quot;</span><span class="fu">:</span> <span class="fl">17.127758</span><span class="fu">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;alt&quot;</span><span class="fu">:</span> <span class="fl">221.639832</span><span class="fu">,</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;spd&quot;</span><span class="fu">:</span> <span class="fl">0.320966</span><span class="fu">,</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;hdg&quot;</span><span class="fu">:</span> <span class="dv">0</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;ts&quot;</span><span class="fu">:</span> <span class="dv">1566042672382</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+</div><div class="column">
+<p><br/></p>
+<pre><code>02 36 01 37 51 4b 73 2b
+d4 24 40 09 68 06 f1 81
+1d b7 4f 40 11 68 cd 8f
+bf b4 20 31 40 19 e6 5d
+f5 80 79 b4 6b 40 21 1a
+30 48 fa b4 8a d4 3f 29
+00 00 00 00 00 00 00 00
+09 00 e0 cf ac f6 c9 76
+42</code></pre>
+</div>
+</div>
+<div class="columns">
+<div class="column">
+<p>JSON<br />
+114 bytes<br />
+<small>without newlines</small></p>
+</div><div class="column">
+<p>Protocol Buffers<br />
+65 bytes (-42%)<br />
+<small><a href="https://gist.github.com/coderbyheart/34a8e71ffe30af882407544567971efb">source</a></small></p>
+</div>
+</div>
+<aside class="notes">
+<p>Consider this GPS message. It contains a lot of data which is intended for humans, but not needed for machines sending or receiving the data.</p>
+<p>The pure binary message would be transmitting only the 6 floats and 1 integer of the message. However a strucured message format is always preferred because we also want to ensure its integrity.</p>
+<p>In JSON notation this document (without newlines) has 114 bytes. If the message were to be transferred using for example Protocol Buffers the data can be encoded with only 65 bytes (a 42% improvement).</p>
+<p>See also: <a href="http://tutorials.jenkov.com/rion/rion-performance-benchmarks.html">RION Performance Benchmarks</a></p>
+</aside>
+</section>
+<section id="protocol-buffers" class="slide level3">
+<h3>Protocol buffers</h3>
+<p><a href="https://developers.google.com/protocol-buffers">developers.google.com/protocol-buffers</a></p>
+<ul>
+<li>send structured data in efficient binary format without overhead</li>
+<li>message format can be changed (ammended) without breaking existing clients</li>
+<li>small implementation for embedded devices exists: <a href="https://github.com/nanopb/nanopb">nanopb</a></li>
+</ul>
+<aside class="notes">
+<p>In the comparison on the previous slide we showed how using Protocol Buffers can dramatically reduce the transferred data size, while keeping a typed message.</p>
+<p>The implementation of Protocol Buffers is however quite big (for a resource constrained device like the nRF9160), and no official encoder/decoder implementation exists for C, <a href="https://github.com/protobuf-c/protobuf-c">inofficial does</a>.</p>
+<p>Flatbuffers is the best candidate with similar data savings.</p>
+<p>Especially the ability to access members of a message directly in place makes it ideal for memory-constrained devices: no need to create a second copy of the received values.</p>
+<p>It also offers flexibility during development is also supported because FlatBuffers offers a schema-less (self-describing) version.</p>
+<p>Unfortunately there is no official support in the nRF Connect SDK or Zephyr as of now.</p>
+</aside>
+</section>
+<section id="flatbuffers" class="slide level3">
+<h3>Flatbuffers</h3>
+<p><a href="https://google.github.io/flatbuffers/">google.github.io/flatbuffers</a></p>
+<ul>
+<li>evolution of <a href="https://developers.google.com/protocol-buffers">Protocol Buffers</a></li>
+<li><strong>access a buffer without parsing</strong></li>
+<li>smaller library, <a href="https://github.com/dvidelabs/flatcc">C implementation exists</a></li>
+<li>wire format size <a href="http://google.github.io/flatbuffers/flatbuffers_benchmarks.html">a little bigger</a> compared to Protocol Buffers</li>
+<li>schema-less (self-describing) messages are supported</li>
+</ul>
+<aside class="notes">
+<p>In the comparison on the previous slide we showed how using Protocol Buffers can dramatically reduce the transferred data size, while keeping a typed message.</p>
+<p>The implementation of Protocol Buffers is however quite big (for a resource constrained device like the nRF9160), and no official encoder/decoder implementation exists for C, <a href="https://github.com/protobuf-c/protobuf-c">inofficial does</a>.</p>
+<p>Flatbuffers is the best candidate with similar data savings.</p>
+<p>Especially the ability to access members of a message directly in place makes it ideal for memory-constrained devices: no need to create a second copy of the received values.</p>
+<p>It also offers flexibility during development is also supported because FlatBuffers offers a schema-less (self-describing) version.</p>
+<p>Unfortunately there is no official support in the nRF Connect SDK or Zephyr as of now.</p>
+</aside>
+</section>
+<section id="cbor" class="slide level3">
+<h3>CBOR</h3>
+<p><a href="https://cbor.io/">cbor.io</a></p>
+<ul>
+<li>maps JSON to binary structures</li>
+<li>zero configuration needed between exchanging parties</li>
+<li>support for embedded devices: <a href="https://intel.github.io/tinycbor/current/">tinycbor</a></li>
+</ul>
+<aside class="notes">
+<p>Therefore the best alternative to JSON right now is CBOR.</p>
+<p>CBOR is standard for encoding JSON data in a set of binary structures. It reduces volume by using more compact one byte values to replace two or more punctuation marks.</p>
+</aside>
+</section>
+<section id="cbor-example" class="slide level3">
+<h3>CBOR: example</h3>
+<p>GPS location message</p>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb4"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;v&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;lng&quot;</span><span class="fu">:</span> <span class="fl">10.414394</span><span class="fu">,</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;lat&quot;</span><span class="fu">:</span> <span class="fl">63.430588</span><span class="fu">,</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;acc&quot;</span><span class="fu">:</span> <span class="fl">17.127758</span><span class="fu">,</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;alt&quot;</span><span class="fu">:</span> <span class="fl">221.639832</span><span class="fu">,</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;spd&quot;</span><span class="fu">:</span> <span class="fl">0.320966</span><span class="fu">,</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;hdg&quot;</span><span class="fu">:</span> <span class="dv">0</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;ts&quot;</span><span class="fu">:</span> <span class="dv">1566042672382</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+</div><div class="column">
+<p><br/></p>
+<pre><code>A2 61 76 A6 63 6C 6E 67
+FB 40 24 D4 2B 73 4B 51
+37 63 6C 61 74 FB 40 4F
+B7 1D 81 F1 06 68 63 61
+63 63 FB 40 31 20 B4 BF
+8F CD 68 63 61 6C 74 FB
+40 6B B4 79 80 F5 5D E6
+63 73 70 64 FB 3F D4 8A
+B4 FA 48 30 1A 63 68 64
+67 00 62 74 73 1B 00 00
+01 6C 9F 6A CC FE</code></pre>
+</div>
+</div>
+<div class="columns">
+<div class="column">
+<p>JSON<br />
+114 bytes<br />
+<small>without newlines</small></p>
+</div><div class="column">
+<p>CBOR<br />
+86 bytes (-24%)<br />
+<small><a href="http://cbor.me/">source</a></small></p>
+</div>
+</div>
+<aside class="notes">
+<p>This shows the possible savings when encoding the GPS location message using CBOR.</p>
+</aside>
+</section>
+<section id="summary-data-protocols" class="slide level3">
+<h3>Summary: Data protocols</h3>
+<p>Look into denser data protocols!<br />
+<strong>JSON is for Humans.</strong></p>
+<ul>
+<li>devices always™ send the same structure:<br />
+no need to transmit it</li>
+<li>less data to send
+<ul>
+<li>less money spent on data (grows linear with № of devices)</li>
+<li>less energy consumed = longer device lifetime</li>
+<li>lower chance of failed transmit</li>
+</ul></li>
+</ul>
+</section>
+<section id="transport-protocols" class="slide level3">
+<h3>Transport protocols</h3>
+<ul>
+<li>MQTT+TLS</li>
+<li>MQTT-SN+(D)TLS</li>
+<li>CoAP/LWM2M+(D)TLS</li>
+</ul>
+</section>
+<section id="mqtttls" class="slide level3">
+<h3>MQTT+TLS</h3>
+<p>common protocol for “ecommerce” cloud vendors<br />
+(<a href="https://docs.aws.amazon.com/iot/latest/developerguide/protocols.html">AWS</a>, <a href="https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-devguide-protocols">Azure</a>, <a href="https://cloud.google.com/iot/docs/concepts/protocols">Google Cloud</a>)</p>
+<ul>
+<li>great fit for asynchronous, event oriented communication: MQTT is bidirectional pub/sub model</li>
+<li>overhead:
+<ul>
+<li>topic name in every MQTT package<br />
+№ of topics per device: ~3</li>
+<li>TLS handshake with AWS IoT broker: ~10 KB</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<p>MQTT with TLS is the default protocol when using IoT offerings from “ecommerce” cloud vendors like Amazon, Microsoft or Google. It’s a great fit for the event-driven communication in IoT and allows both sides to initiate communication.</p>
+<p>However the protocol overhead for both MQTT and TLS are substantial: the initial handshake is large, and then every MQTT package contains repeated information. The MQTT topic name is quite long (typical size is around 60 Byte), which could actually be omitted.</p>
+</aside>
+</section>
+<section id="mqtt-sndtls" class="slide level3">
+<h3>MQTT-SN+(D)TLS</h3>
+<p><a href="https://www.oasis-open.org/committees/document.php?document_id=66091">MQTT-SN 1.2 Specification</a></p>
+<ul>
+<li>optimized version designed specifically IoT</li>
+<li>supports UDP</li>
+<li>use numeric IDs instead of strings for topic names</li>
+<li>better offline support</li>
+<li><strong>not supported</strong> by cloud vendors: needs a (stateful) Gateway</li>
+</ul>
+<aside class="notes">
+<p>MQTT-SN was specifically designed for IoT devices and tries to address the issues mentioned earlier.</p>
+<p>The main differences involve:</p>
+<ul>
+<li>Reducing the size of the message payload</li>
+<li>Removing the need for a permanent connection by using UDP as the transport protocol.</li>
+</ul>
+</aside>
+</section>
+<section id="coaplwm2mdtls" class="slide level3">
+<h3>CoAP/LWM2M+(D)TLS</h3>
+<ul>
+<li>common protocol in Telco clouds (Verizon’s Thingspace, AT&amp;T’s IoT Platform)</li>
+<li>typically used for device management (carrier library)</li>
+<li><strong>not supported</strong> by cloud vendors: needs a (stateful) Gateway.<br />
+Proof-of-concept AWS IoT-LwM2M Gateway: <a href="https://github.com/coderbyheart/leshan-aws">github.com/coderbyheart/leshan-aws</a></li>
+</ul>
+<aside class="notes">
+<p>This protocol is mostly used for device management. Especially LwM2M comes with a large set of predefined operations (e.g. firmware update) and uses very lightweight messaging. It also supports UDP out of the box which makes it an ideal protoco for resource constraint devices.</p>
+<p>However there is no out-of-the box support by ecommerce cloud vendors, so here again one needs to operate a Gateway.</p>
+</aside>
+</section>
+<section id="iot-connectivity-summary" class="slide level3">
+<h3>IoT connectivity summary</h3>
+<ul>
+<li>no silver bullet - multiple <em>conflicting</em> dimensions need to be considered</li>
+<li>highly depends on use case scenario</li>
+<li>ultra-low power relevant in all scenarios:
+<ul>
+<li>data = money</li>
+<li>power consumption = money</li>
+</ul></li>
+</ul>
+</section></section>
+<section>
+<section id="what-is-serverless" class="title-slide slide level2">
+<h2>What is <em>serverless</em>?</h2>
+<p>Serverless [architectures] are application designs that […] run in <strong>managed, ephemeral containers</strong> on a “Functions as a Service” (FaaS) platform.</p>
+<aside class="notes">
+<p>Source: https://martinfowler.com/articles/serverless.html</p>
+</aside>
+</section>
+<section id="benefits" class="slide level3">
+<h3>Benefits</h3>
+<p>By using these ideas, […] such architectures remove much of the need for a traditional always-on server component.</p>
+<p>[They] <strong>may</strong> benefit from significantly reduced operational cost, complexity, and engineering lead time, at a cost of increased reliance on vendor dependencies and comparatively immature supporting services.</p>
+<p>Source: <a href="https://martinfowler.com/articles/serverless.html">martinfowler.com/articles/serverless.html</a></p>
+</section>
+<section id="why-i-like-serverless" class="slide level3">
+<h3>Why I like <em>serverless</em></h3>
+<p><em>Serverless computing allows me to focus on implementing the solution, and not spend time on maintaining the infrastructure needed to execute it.</em></p>
+</section>
+<section id="or-more-practical" class="slide level3">
+<h3>or more practical</h3>
+<ul>
+<li>build globally scalable solutions with a small team</li>
+<li>suprises are rare, allows me to go on vacation</li>
+</ul>
+<aside class="notes">
+<p>Going serverless allows me and a rather small team of engineers to build a globally scalable software solution with a very high confidence in it’s scalability and an ease of mind during operations.</p>
+<p>In the last years since I have been working fully serverless, I have not once experienced a surprising event that impacted our production system.</p>
+<p>Yes, we experience issues which gradually become more serious over time, but in general it happens in a way that does not interfere with my vacation plans.</p>
+<p>Serverless not only enables horizontal scalability, but allows to update each component of the solution individually: the code for a lambda function can be replaced without affecting other functions. This means no more waiting minutes for a monolithic container to come up again after a fix has been deployed.</p>
+</aside>
+</section>
+<section id="horizontal-scalablity" class="slide level3">
+<h3>Horizontal Scalablity</h3>
+<ul>
+<li>Serverless implementations depend on <em>stateless</em>, <em>event-driven</em> implementations.</li>
+<li>This allows to process as many requests as needed, in <em>parallel</em>.</li>
+<li>However, you have to deal with eventual consistency.</li>
+</ul>
+</section>
+<section id="updating-individual-components" class="slide level3">
+<h3>Updating individual components</h3>
+<p>Instead of restarting the instance,<br />
+I can update <em>an individual function</em>.</p>
+<aside class="notes">
+<p>Serverless not only enables horizontal scalability, but allows to update each component of the solution individually: the code for a lambda function can be replaced without affecting other functions. This means no more waiting minutes for a monolithic container to come up again after a fix has been deployed.</p>
+</aside>
+</section>
+<section id="downsides-of-serverless" class="slide level3">
+<h3>Downsides of <em>serverless</em></h3>
+</section>
+<section id="testability" class="slide level3">
+<h3>Testability</h3>
+<ul>
+<li>Testing cloud-native solutions really is a challenge.</li>
+</ul>
+<aside class="notes">
+<p>You can see my talk about testing cloud-native solutions here: https://coderbyheart.com/it-does-not-run-on-my-machine/</p>
+</aside>
+</section>
+<section id="infrastructure-is-part-of-the-solution" class="slide level3">
+<h3>Infrastructure is part of the solution</h3>
+<ul>
+<li>More ceremony involved, defining infrastructure as code is now your job.</li>
+</ul>
+</section>
+<section id="serverless-is-usually-closed-source" class="slide level3">
+<h3>Serverless is usually closed source</h3>
+<ul>
+<li>Impossible to run it locally.</li>
+</ul>
+</section>
+<section id="mindset-shift" class="slide level3">
+<h3>Mindset shift</h3>
+<ul>
+<li>Huge mindset shift from the classical application server model (LAMP, Tomcat, Rails), to a serverless, stateless, eventual consistent application development model.</li>
+</ul>
+</section></section>
+<section>
+<section id="aws-lambda-explained" class="title-slide slide level2">
+<h2>AWS Lambda explained</h2>
+<p>With <a href="https://aws.amazon.com/lambda/">Lambda</a>, you can run code virtually with zero administration of the underlying infrastructure. You are responsible only for the code that you provide Lambda, and the configuration of how Lambda runs that code on your behalf.</p>
+<aside class="notes">
+<p>Sources for this section:</p>
+<ul>
+<li>https://docs.aws.amazon.com/lambda/latest/dg/welcome.html</li>
+<li>https://docs.aws.amazon.com/whitepapers/latest/security-overview-aws-lambda/</li>
+</ul>
+</aside>
+</section>
+<section id="aws-lambda-hello-world" class="slide level3">
+<h3>AWS Lambda <em>Hello World!</em></h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> AWS <span class="op">=</span> <span class="pp">require</span>(<span class="st">&quot;aws-sdk&quot;</span>)<span class="op">;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> s3 <span class="op">=</span> <span class="kw">new</span> AWS<span class="op">.</span><span class="fu">S3</span>()<span class="op">;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>exports<span class="op">.</span><span class="at">handler</span> <span class="op">=</span> <span class="kw">async</span> (<span class="bu">event</span>) <span class="kw">=&gt;</span> s3<span class="op">.</span><span class="fu">listBuckets</span>()<span class="op">.</span><span class="fu">promise</span>()<span class="op">;</span></span></code></pre></div>
+</section>
+<section id="aws-lambda-execution" class="slide level3">
+<h3>AWS Lambda execution</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> AWS <span class="op">=</span> <span class="pp">require</span>(<span class="st">&quot;aws-sdk&quot;</span>)<span class="op">;</span> <span class="co">// Dependencies included in runtime</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> s3 <span class="op">=</span> <span class="kw">new</span> AWS<span class="op">.</span><span class="fu">S3</span>()<span class="op">;</span> <span class="co">// Credentials provided by environment (based on role)</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">// event populated per request</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>exports<span class="op">.</span><span class="at">handler</span> <span class="op">=</span> <span class="kw">async</span> (<span class="bu">event</span>) <span class="kw">=&gt;</span> s3<span class="op">.</span><span class="fu">listBuckets</span>()<span class="op">.</span><span class="fu">promise</span>()<span class="op">;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">// response is returned to invoker by runtime</span></span></code></pre></div>
+</section>
+<section id="supported-runtimes" class="slide level3">
+<h3>Supported runtimes</h3>
+<h4 id="built-in">Built-in</h4>
+<p>Node.js, Python, Ruby, Java, Go, .NET Core</p>
+<h4 id="custom-runtimes">Custom runtimes</h4>
+<p>Anything that runs in Amazon Linux 2.</p>
+<aside class="notes">
+<ul>
+<li>https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html</li>
+<li>https://docs.aws.amazon.com/lambda/latest/dg/runtimes-custom.html</li>
+<li>Amazon Linux 2: https://aws.amazon.com/amazon-linux-2/</li>
+</ul>
+</aside>
+</section>
+<section id="when-should-i-use-lambda" class="slide level3">
+<h3>When should I use Lambda?</h3>
+<p>Lambda is best suited for shorter, event-driven workloads, since Lambda functions run for up to 15 minutes per invocation.</p>
+</section>
+<section id="other-limits" class="slide level3">
+<h3>Other limits</h3>
+<ul>
+<li>RAM: max 10 GB</li>
+<li>payload (event): max 6 MB</li>
+<li>source code size: max 25 MB / 10 GB container image</li>
+<li>open files: 1,024</li>
+<li><code>/tmp</code> size: max 512 MB</li>
+</ul>
+</section>
+<section id="scaling" class="slide level3">
+<h3>Scaling</h3>
+<ul>
+<li>first invokation (event) creates a function instance</li>
+<li>stays active after response and waits to process additional events</li>
+<li>more instances are created if multiple events need processing at the same time</li>
+<li>instances are discared if number of events decreases</li>
+</ul>
+<figure>
+<img data-src="./features-scaling-provisioned-auto.png" style="width:50.0%" alt="Autoscaling with Provisioned Concurrency" /><figcaption aria-hidden="true">Autoscaling with Provisioned Concurrency</figcaption>
+</figure>
+<aside class="notes">
+<p>https://docs.aws.amazon.com/lambda/latest/dg/invocation-scaling.html</p>
+<p>The first time you invoke your function, AWS Lambda creates an instance of the function and runs its handler method to process the event. When the function returns a response, it stays active and waits to process additional events. If you invoke the function again while the first event is being processed, Lambda initializes another instance, and the function processes the two events concurrently. As more events come in, Lambda routes them to available instances and creates new instances as needed. When the number of requests decreases, Lambda stops unused instances to free up scaling capacity for other functions.</p>
+</aside>
+</section>
+<section id="lambda-execution-environments" class="slide level3">
+<h3>Lambda execution environments</h3>
+<p>Lambda provides <strong>function version level isolation</strong>:</p>
+<ul>
+<li>reserved for a specific function version
+<ul>
+<li>no reuse across function versions, functions, or AWS accounts</li>
+</ul></li>
+<li>only one concurrent invocation at a time</li>
+</ul>
+<aside class="notes">
+<p>This means a single function which may have two different versions would result in at least two unique execution environments.</p>
+<p>Each execution environment may only be used for one concurrent invocation at a time, and they may be reused across multiple invocations of the same function version for performance reasons. Depending on a number of factors (for example, rate of invocation, function configuration, and so on), one or more execution environments may exist for a given function version. With this approach, Lambda is able to provide function version level isolation for its customers.</p>
+<p>Execution environments are continuously monitored and managed by Lambda, and they may be created or destroyed for any number of reasons including, but not limited to:</p>
+<ul>
+<li>A new invoke arrives and no suitable execution environment exists</li>
+<li>An internal runtime or Worker software deployment occurs</li>
+<li>A new provisioned concurrency configuration is published</li>
+<li>The lease time on the execution environment, or the Worker, is approaching or has exceeded max lifetime</li>
+<li>Other internal workload rebalancing processes</li>
+</ul>
+<p>Source: https://docs.aws.amazon.com/whitepapers/latest/security-overview-aws-lambda/lambda-executions.html</p>
+</aside>
+</section>
+<section id="execution-environment" class="slide level3">
+<h3>Execution environment</h3>
+<figure>
+<img data-src="./lambda-execution-environment.png" style="width:70.0%" alt="A diagram showing the isolation model for AWS Lambda Workers." /><figcaption aria-hidden="true">A diagram showing the isolation model for AWS Lambda Workers.</figcaption>
+</figure>
+<p>Execution environments are isolated from one another using several container-like technologies. Amazon open-sourced their virtualization technology, called <a href="https://firecracker-microvm.github.io/">Firecracker</a>.</p>
+<aside class="notes">
+<p>Lambda will create its execution environments on a fleet of Amazon EC2 instances called AWS Lambda Workers. Workers are bare metalEC2 Nitro instances which are launched and managed by Lambda in a separate isolated AWS account which is not visible to customers. Workers have one or more hardware-virtualized Micro Virtual Machines (MVM) created by Firecracker. Firecracker is an open-source Virtual Machine Monitor (VMM) that uses Linux’s Kernel-based Virtual Machine (KVM) to create and manage MVMs. It is purpose-built for creating and managing secure, multi-tenant container and function-based services that provide serverless operational models.</p>
+<p>As a part of the shared responsibility model, Lambda is responsible for maintaining the security configuration, controls, and patching level of the Workers. The Lambda team uses Amazon Inspector to discover known potential security issues, as well as other custom security issue notification mechanisms and pre-disclosure lists, so that customers don’t need to manage the underlying security posture of their execution environment.</p>
+<p>Workers have a maximum lease lifetime of 14 hours. When a Worker approaches maximum lease time, no further invocations are routed to it, MVMs are gracefully terminated, and the underlying Worker instance is terminated. Lambda continuously monitors and alarms on lifecycle activities of its fleet’s lifetime.</p>
+<p>All data plane communications to workers are encrypted using Advanced Encryption Standard with Galois/Counter Mode (AES-GCM). Other than through data plane operations, customers cannot directly interact with a worker as it hosted in a network isolated Amazon VPC managed by Lambda in Lambda’s service accounts.</p>
+<p>When a Worker needs to create a new execution environment, it is given time-limited authorization to access customer function artifacts. These artifacts are specifically optimized for Lambda’s execution environment and workers. Function code which is uploaded using the ZIP format is optimized once, and then is stored in an encrypted format using an AWS-managed key and AES-GCM.</p>
+<p>Functions uploaded to Lambda using the container image format are also optimized. The container image is first downloaded from its original source, optimized into distinct chunks, and then stored as encrypted chunks using an authenticated convergent encryption method which uses a combination of AES-CTR, AES-GCM, and a SHA-256 MAC. The convergent encryption method allows Lambda to securely deduplicate encrypted chunks. All keys required to decrypt customer data is protected using customer-managed AWS KMS Customer Master Key (CMK). CMK usage by the Lambda service is available to customers in AWS CloudTrail logs for tracking and auditing.</p>
+<p>Source: https://docs.aws.amazon.com/whitepapers/latest/security-overview-aws-lambda/lambda-executions.html</p>
+<p>See also: https://docs.aws.amazon.com/whitepapers/latest/security-overview-aws-lambda/lambda-isolation-technologies.html</p>
+</aside>
+</section>
+<section id="execution-environment-lifecycle" class="slide level3">
+<h3>Execution environment lifecycle</h3>
+<figure>
+<img data-src="./execution-environment-lifecycle.png" alt="The execution environment lifecycle" /><figcaption aria-hidden="true">The execution environment lifecycle</figcaption>
+</figure>
+<ol type="1">
+<li>download the code for the function from S3 or ECR</li>
+<li>create environment with the memory, runtime, and configuration specified</li>
+<li>run any initialization code outside of the event handler</li>
+<li>run the handler code.</li>
+</ol>
+<aside class="notes">
+<p>When the Lambda service receives a request to run a function via the Lambda API, the service first prepares an execution environment. During this step, the service downloads the code for the function, which is stored in an internal S3 bucket (or in Amazon ECR if the function uses container packaging). It then creates an environment with the memory, runtime, and configuration specified. Once complete, Lambda runs any initialization code outside of the event handler before finally running the handler code.</p>
+<p>In this diagram, the first two steps of setting up the environment and the code are frequently referred to as a “cold start”. You are not charged for the time it takes for Lambda to prepare the function but it does add latency to the overall invocation duration.</p>
+<p>After the execution completes, the execution environment is frozen. To improve resource management and performance, the Lambda service retains the execution environment for a non-deterministic period of time. During this time, if another request arrives for the same function, the service may reuse the environment. This second request typically finishes more quickly, since the execution environment already exists and it’s not necessary to download the code and run the initialization code. This is called a “warm start”.</p>
+<p>Source: https://docs.aws.amazon.com/lambda/latest/operatorguide/execution-environments.html</p>
+</aside>
+</section>
+<section id="hitting-the-cold-start-zone" class="slide level3">
+<h3>Hitting the cold start zone</h3>
+<figure>
+<img data-src="./cold-starts.png" alt="Lambda cold starts" /><figcaption aria-hidden="true">Lambda cold starts</figcaption>
+</figure>
+<p>Lambda service retains the execution environment for a non-deterministic period of time.</p>
+<aside class="notes">
+<p>The Lambda service retains the execution environment instead of destroying it immediately after execution. There are also operational factors in the Lambda services that influence the retention time.</p>
+<p>While execution environment reuse is useful, you should not depend on this for performance optimization. Lambda is a high availability service that manages execution across multiple Availability Zones in an AWS Region. Depending upon aggregate customer traffic, the service may load balance a function at any time. As a result, it’s possible for a function to be invoked twice in a short period of time, and both executions experience a cold-start due to this load rebalancing activity.</p>
+<p>Additionally, in the event that a Lambda function scales up due to traffic, each additional concurrent invocation of the function requires a new execution environment. This means that each concurrent execution experiences a cold-start, even as existing concurrent functions may already be warm.</p>
+<p>Finally, anytime you update the code in a Lambda function or change the functional configuration, the next invocation results in a cold start. Any existing environments running a previous version of the “Latest” alias are reaped to ensure that only the new version of the code is used.</p>
+</aside>
+</section>
+<section id="cold-start-scenarios" class="slide level3">
+<h3>Cold start scenarios</h3>
+</section>
+<section id="simultaneous-requests" class="slide level3">
+<h3>6 simultaneous requests</h3>
+<figure>
+<img data-src="./simultaneous-requests.png" alt="6 simultaneous requests" /><figcaption aria-hidden="true">6 simultaneous requests</figcaption>
+</figure>
+<aside class="notes">
+<p>If API Gateway invokes Lambda six times simultaneously, this causes Lambda to create six execution environments. The total duration of each invocation includes a cold start:</p>
+</aside>
+</section>
+<section id="asynchronous-inviations-with-reserved-concurrency-1" class="slide level3">
+<h3>6 asynchronous inviations with reserved concurrency 1</h3>
+<figure>
+<img data-src="./asynchronous-inviations.png" alt="6 asynchronous inviations with reserved concurrency 1" /><figcaption aria-hidden="true">6 asynchronous inviations with reserved concurrency 1</figcaption>
+</figure>
+<aside class="notes">
+<p>However, if API Gateway invokes Lambda 6 times sequentially with a delay between each invocation, the existing execution environments are reused if the previous invocation is complete. In this case, only the first two invocations experience a cold start, while invocations 3 through 6 use warm environments.</p>
+</aside>
+</section>
+<section id="requests-with-staggered-arrival" class="slide level3">
+<h3>6 requests with staggered arrival</h3>
+<figure>
+<img data-src="./s3-events.png" alt="S3 bucket events" /><figcaption aria-hidden="true">S3 bucket events</figcaption>
+</figure>
+<figure>
+<img data-src="./staggered-arrival.png" alt="6 requests with staggered arrival" /><figcaption aria-hidden="true">6 requests with staggered arrival</figcaption>
+</figure>
+<aside class="notes">
+<p>For asynchronous invocations, an internal queue exists between the caller and the Lambda service. Lambda processes messages from this queue as quickly as possible and scales up automatically as needed. In the event that the function uses reserved concurrency, this acts as a maximum capacity, so the internal queue retains the messages until the function can process them.</p>
+<p>For example, an S3 bucket is configured to invoke a Lambda function when objects are written to the bucket, if the reserved capacity of the Lambda function is set to 1 and 6 objects are written to the bucket simultaneously, the events are processed sequentially by a single execution environment. Pending events are maintained in the internal queue.</p>
+</aside>
+</section>
+<section id="cold-start-times" class="slide level3">
+<h3>Cold start times</h3>
+<p><a href="https://mikhail.io/serverless/coldstarts/aws/languages/"><img data-src="./cold-start-times.png" alt="Cold start times" /></a></p>
+<ul>
+<li>typically &lt;1% of invocations in production deployments</li>
+</ul>
+<aside class="notes">
+<p>According to an analysis of production Lambda workloads, cold starts typically occur in under 1% of invocations. The duration of a cold start varies from under 100 ms to over 1 second. Since the Lambda service optimizes internally based upon invocation patterns for functions, cold starts are typically more common in development and test functions than production workloads. This is because development and test functions are usually invoked less frequently. Overall, the Lambda service optimizes the execution of functions across all customers to reduce the number of cold starts.</p>
+<p>Source: https://aws.amazon.com/blogs/compute/operating-lambda-performance-optimization-part-1/</p>
+<p>Chart source: https://mikhail.io/serverless/coldstarts/aws/languages/</p>
+</aside>
+</section>
+<section id="cold-start-mitigation" class="slide level3">
+<h3>Cold start mitigation</h3>
+<ul>
+<li>reserved concurrency (keep <em>n</em> instances alive all the time)</li>
+<li>reduce cold start time:
+<ul>
+<li>reduce deployment artifact size</li>
+<li>chose <em>leaner</em> execution environment</li>
+<li>give more resources to Lambda (RAM)</li>
+<li>reduce start up time (e.g. DB connections)</li>
+<li>reduce processing run time</li>
+</ul></li>
+</ul>
+</section></section>
+<section>
+<section id="iot-3-serverless" class="title-slide slide level2">
+<h2>IoT &lt;3 <em>serverless</em></h2>
+
+</section>
+<section id="no-world" class="slide level3">
+<h3>No <strong>world</strong></h3>
+<ul>
+<li>Many, many devices, that don’t share global state.</li>
+</ul>
+</section>
+<section id="billion-iot-devices-this-year" class="slide level3">
+<h3>18+ billion IoT devices this year</h3>
+<ul>
+<li>Needs to scale to billions of devices, connections, message per day.</li>
+</ul>
+<aside class="notes">
+<p>https://www.ericsson.com/en/about-us/company-facts/ericsson-worldwide/india/authored-articles/ushering-in-a-better-connected-future</p>
+</aside>
+</section>
+<section id="data-for-thousands-of-use-cases" class="slide level3">
+<h3>Data for thousands of use cases</h3>
+<ul>
+<li>Many different operations with different business needs (processing) on small datasets, suits serverless microservice model very well.</li>
+</ul>
+</section>
+<section id="architecture-example-store-and-retrieve-temperature-data" class="slide level3">
+<h3>Architecture Example: store and retrieve temperature data</h3>
+<figure>
+<img data-src="./historical-data.jpg" alt="Historical Data" /><figcaption aria-hidden="true">Historical Data</figcaption>
+</figure>
+<p><a href="./assets/miro.pdf">PDF version</a> - <a href="https://miro.com/app/board/o9J_llBJjJM=/">Miro Board</a></p>
+</section>
+<section id="aws-implementation" class="slide level3">
+<h3>AWS implementation</h3>
+<figure>
+<img data-src="./aws.jpg" style="width:80.0%" alt="AWS implementation" /><figcaption aria-hidden="true">AWS implementation</figcaption>
+</figure>
+</section></section>
+<section>
+<section id="learning-resources" class="title-slide slide level2">
+<h2>Learning resources</h2>
+
+</section>
+<section id="book-recommendations" class="slide level3">
+<h3>Book recommendations</h3>
+<ul>
+<li><a href="http://shop.oreilly.com/product/9780596805838.do">REST in Practice</a></li>
+<li><a href="https://itrevolution.com/book/accelerate/">ACCELERATE</a></li>
+</ul>
+</section>
+<section id="cellular-iot-development" class="slide level3">
+<h3>Cellular IoT development</h3>
+<ul>
+<li><a href="https://infocenter.nordicsemi.com/topic/nwp_044/WP/nwp_044/intro.html">Best practices for cellular IoT development</a> (Whitepaper)</li>
+<li><a href="https://academy.nordicsemi.com/courses/nrf-connect-sdk-fundamentals/">nRF Connect SDK fundamentals</a> (Online course)</li>
+</ul>
+</section></section>
+<section id="thank-you-happy-connecting" class="title-slide slide level2">
+<h2>Thank you &amp; happy connecting!</h2>
+<p>Please share your feedback!</p>
+<p><small><a href="mailto:Markus.Tacker@NordicSemi.no">Markus.Tacker@NordicSemi.no</a><br />
+<a href="https://twitter.com/coderbyheart">@coderbyheart</a></small></p>
+<p><small>Latest version:<br />
+<a href="https://bit.ly/awsiotarch"><code>bit.ly/awsiotarch</code></a></small></p>
+<p>We are hiring!<br />
+<a href="https://nordicsemi.com/jobs">nordicsemi.com/jobs</a><br />
+<small>Trondheim · Oslo · 20+ more locations</small></p>
+</section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: true,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    </body>
+</html>
